@@ -1,49 +1,56 @@
 :root {
-  --bg: #faf9f6;
+  --bg: #f6f2ea;
   --surface: #ffffff;
-  --surface-2: #f2f1ec;
-  --text: #1a1d24;
-  --text-muted: #5b6270;
-  --border: rgba(20, 22, 30, 0.1);
-  --brand: #3a4fd6;
-  --brand-strong: #2c3cad;
-  --accent: #e8912a;
+  --surface-2: #efe9dc;
+  --text: #211c2e;
+  --text-muted: #6c6478;
+  --border: rgba(33, 28, 46, 0.11);
+  --brand: #5b3fd9;
+  --brand-strong: #4830b8;
+  --accent: #e2672b;
   --ok: #1f8a4c;
   --bad: #c73a3a;
-  --shadow: 0 8px 24px rgba(20, 22, 30, 0.08);
-  --radius: 14px;
+  --shadow: 0 10px 28px rgba(33, 20, 60, 0.1);
+  --radius: 16px;
   --font: -apple-system, BlinkMacSystemFont, "Pretendard", "Malgun Gothic", "Segoe UI", sans-serif;
+
+  --hero-bg-1: #16112b;
+  --hero-bg-2: #241a4a;
+  --hero-text: #f7f3ff;
+  --hero-muted: #b9aede;
+  --hero-accent: #ff9d52;
+  --hero-glow: #7c5cff;
 }
 
 :root[data-theme="dark"] {
-  --bg: #0f1116;
-  --surface: #171a21;
-  --surface-2: #1e222b;
-  --text: #edeff2;
-  --text-muted: #9aa1ad;
-  --border: rgba(255, 255, 255, 0.09);
-  --brand: #7d8cf7;
-  --brand-strong: #97a4f9;
-  --accent: #f2a955;
+  --bg: #100e1a;
+  --surface: #1a1630;
+  --surface-2: #221c3c;
+  --text: #f3f0fb;
+  --text-muted: #a89fc6;
+  --border: rgba(255, 255, 255, 0.1);
+  --brand: #a58bff;
+  --brand-strong: #bda6ff;
+  --accent: #ff9d52;
   --ok: #4bc47d;
   --bad: #e8635f;
-  --shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  --shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #0f1116;
-    --surface: #171a21;
-    --surface-2: #1e222b;
-    --text: #edeff2;
-    --text-muted: #9aa1ad;
-    --border: rgba(255, 255, 255, 0.09);
-    --brand: #7d8cf7;
-    --brand-strong: #97a4f9;
-    --accent: #f2a955;
+    --bg: #100e1a;
+    --surface: #1a1630;
+    --surface-2: #221c3c;
+    --text: #f3f0fb;
+    --text-muted: #a89fc6;
+    --border: rgba(255, 255, 255, 0.1);
+    --brand: #a58bff;
+    --brand-strong: #bda6ff;
+    --accent: #ff9d52;
     --ok: #4bc47d;
     --bad: #e8635f;
-    --shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    --shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
   }
 }
 
@@ -61,7 +68,7 @@ body {
 a { color: var(--brand); }
 
 .wrap {
-  max-width: 960px;
+  max-width: 1000px;
   margin: 0 auto;
   padding: 0 1.5rem;
 }
@@ -71,7 +78,6 @@ a { color: var(--brand); }
   align-items: center;
   justify-content: space-between;
   padding: 1.1rem 0;
-  border-bottom: 1px solid var(--border);
 }
 
 .brand {
@@ -79,7 +85,7 @@ a { color: var(--brand); }
   align-items: center;
   gap: 0.55rem;
   text-decoration: none;
-  color: var(--text);
+  color: inherit;
   font-weight: 700;
   font-size: 1.05rem;
   letter-spacing: -0.01em;
@@ -89,8 +95,9 @@ a { color: var(--brand); }
 
 .theme-toggle {
   border: 1px solid var(--border);
-  background: var(--surface);
-  color: var(--text-muted);
+  background: transparent;
+  color: inherit;
+  opacity: 0.75;
   border-radius: 999px;
   width: 36px;
   height: 36px;
@@ -100,7 +107,7 @@ a { color: var(--brand); }
   cursor: pointer;
   font-size: 1rem;
 }
-.theme-toggle:hover { color: var(--text); border-color: var(--brand); }
+.theme-toggle:hover { opacity: 1; border-color: currentColor; }
 
 .badge {
   display: inline-flex;
@@ -109,9 +116,9 @@ a { color: var(--brand); }
   font-size: 0.8rem;
   font-weight: 600;
   color: var(--accent);
-  background: color-mix(in srgb, var(--accent) 14%, transparent);
-  border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
-  padding: 0.3rem 0.7rem;
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 38%, transparent);
+  padding: 0.32rem 0.75rem;
   border-radius: 999px;
 }
 
@@ -119,26 +126,27 @@ a { color: var(--brand); }
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  background: var(--brand);
-  color: #fff;
-  font-weight: 600;
+  background: var(--accent);
+  color: #1a0f00;
+  font-weight: 700;
   text-decoration: none;
-  padding: 0.75rem 1.4rem;
+  padding: 0.8rem 1.5rem;
   border-radius: 10px;
   border: none;
   cursor: pointer;
   font-size: 0.95rem;
-  box-shadow: var(--shadow);
+  box-shadow: 0 10px 24px rgba(226, 103, 43, 0.28);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
-.btn:hover { background: var(--brand-strong); }
+.btn:hover { transform: translateY(-1px); box-shadow: 0 14px 30px rgba(226, 103, 43, 0.35); }
 
 .btn-secondary {
   background: transparent;
-  color: var(--text);
-  border: 1px solid var(--border);
+  color: inherit;
+  border: 1px solid color-mix(in srgb, currentColor 30%, transparent);
   box-shadow: none;
 }
-.btn-secondary:hover { border-color: var(--brand); color: var(--brand); }
+.btn-secondary:hover { border-color: currentColor; transform: translateY(-1px); box-shadow: none; }
 
 .card {
   background: var(--surface);
