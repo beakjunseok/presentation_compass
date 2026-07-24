@@ -11,55 +11,79 @@
     position: relative;
     overflow: hidden;
     background:
-      radial-gradient(60% 80% at 82% 0%, color-mix(in srgb, var(--hero-glow) 45%, transparent), transparent 60%),
-      linear-gradient(160deg, var(--hero-bg-1), var(--hero-bg-2) 70%);
+      radial-gradient(50% 65% at 88% -10%, color-mix(in srgb, var(--hero-glow) 55%, transparent), transparent 65%),
+      radial-gradient(40% 50% at 8% 110%, color-mix(in srgb, var(--hero-accent) 22%, transparent), transparent 70%),
+      linear-gradient(165deg, var(--hero-bg-1), var(--hero-bg-2) 75%);
     color: var(--hero-text);
   }
-  .hero-rings {
+  .hero-band::before {
+    content: "";
     position: absolute;
-    top: 50%;
-    right: -140px;
-    transform: translateY(-50%);
-    width: 560px;
-    height: 560px;
-    opacity: 0.35;
+    inset: 0;
+    background-image: radial-gradient(rgba(255,255,255,0.09) 1px, transparent 1px);
+    background-size: 22px 22px;
+    mask-image: radial-gradient(60% 60% at 75% 20%, black, transparent 75%);
     pointer-events: none;
   }
   .hero-band .site-nav .brand { color: var(--hero-text); }
   .hero-band .theme-toggle { color: var(--hero-text); border-color: rgba(255,255,255,0.18); }
 
-  .hero {
+  .hero-grid {
     position: relative;
-    padding: 3.2rem 0 5rem;
+    display: grid;
+    grid-template-columns: 1.15fr 0.95fr;
+    gap: 3rem;
+    align-items: center;
+    padding: 3.5rem 0 4.5rem;
   }
+  .hero-mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    border-radius: 13px;
+    background: color-mix(in srgb, var(--hero-accent) 18%, transparent);
+    border: 1px solid color-mix(in srgb, var(--hero-accent) 40%, transparent);
+    margin-bottom: 1.4rem;
+  }
+  .hero-mark svg { width: 24px; height: 24px; color: var(--hero-accent); }
+
   .hero h1 {
-    font-size: clamp(2.1rem, 4.6vw, 3rem);
-    letter-spacing: -0.02em;
-    margin: 1.1rem 0 1rem;
-    max-width: 620px;
+    font-size: clamp(2.1rem, 3.6vw, 2.85rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.22;
+    margin: 0 0 1.15rem;
+  }
+  .hero h1 em {
+    font-style: normal;
+    background: linear-gradient(100deg, var(--hero-accent), #ffcf9e);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
   }
   .hero p.lead {
-    font-size: 1.12rem;
+    font-size: 1.08rem;
     color: var(--hero-muted);
-    max-width: 480px;
-    margin: 0 0 2.1rem;
+    max-width: 460px;
+    margin: 0 0 2.2rem;
   }
   .hero-actions {
     display: flex;
     gap: 0.75rem;
     flex-wrap: wrap;
-    margin-bottom: 0.5rem;
   }
   .hero-band .btn-secondary { color: var(--hero-text); border-color: rgba(255,255,255,0.28); }
 
-  /* 분석 예시 미리보기 카드 */
-  .preview-wrap { margin-top: -3.2rem; position: relative; z-index: 2; }
+  /* 분석 예시 미리보기 카드 — 히어로 안에 배치 */
   .preview-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 1.6rem 1.8rem;
-    box-shadow: var(--shadow);
+    background: color-mix(in srgb, var(--hero-bg-2) 55%, #000 10%);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 18px;
+    padding: 1.5rem 1.6rem;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.4);
+    backdrop-filter: blur(6px);
   }
   .preview-label {
     display: flex;
@@ -68,20 +92,23 @@
     margin-bottom: 1rem;
   }
   .preview-label .tag {
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     font-weight: 700;
-    color: var(--text-muted);
+    color: var(--hero-muted);
     text-transform: uppercase;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.08em;
   }
+  .dot-row { display: flex; gap: 0.32rem; }
+  .dot-row span { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.18); }
+
   .transcript {
-    font-size: 1.05rem;
-    line-height: 2;
-    color: var(--text);
+    font-size: 1rem;
+    line-height: 1.9;
+    color: var(--hero-text);
   }
   .transcript mark {
-    background: color-mix(in srgb, var(--accent) 22%, transparent);
-    color: var(--accent);
+    background: color-mix(in srgb, var(--hero-accent) 28%, transparent);
+    color: var(--hero-accent);
     font-weight: 700;
     border-radius: 6px;
     padding: 0.05rem 0.35rem;
@@ -89,72 +116,84 @@
   }
   .preview-stats {
     display: flex;
-    gap: 0.7rem;
+    gap: 0.6rem;
     flex-wrap: wrap;
-    margin-top: 1.3rem;
-    padding-top: 1.2rem;
-    border-top: 1px solid var(--border);
+    margin-top: 1.2rem;
+    padding-top: 1.1rem;
+    border-top: 1px solid rgba(255,255,255,0.1);
   }
   .stat-chip {
-    background: var(--surface-2);
+    background: rgba(255,255,255,0.06);
     border-radius: 10px;
-    padding: 0.6rem 0.9rem;
-    font-size: 0.85rem;
+    padding: 0.55rem 0.85rem;
+    font-size: 0.82rem;
+    flex: 1;
+    min-width: 90px;
   }
-  .stat-chip b { color: var(--text); display: block; font-size: 1.05rem; }
-  .stat-chip span { color: var(--text-muted); }
+  .stat-chip b { color: var(--hero-text); display: block; font-size: 1.1rem; letter-spacing: -0.01em; }
+  .stat-chip span { color: var(--hero-muted); }
+
+  @media (max-width: 760px) {
+    .hero-grid { grid-template-columns: 1fr; padding-bottom: 3rem; }
+  }
 
   .section-eyebrow {
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     font-weight: 700;
     color: var(--brand);
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.1em;
     margin-bottom: 0.5rem;
   }
 
-  .features {
+  .features { margin: 4.5rem 0 4rem; }
+  .features-head { margin-bottom: 1.8rem; }
+  .features-head h2 { font-size: 1.5rem; margin: 0; letter-spacing: -0.02em; }
+  .features-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 1.1rem;
-    margin: 1.5rem 0 3.5rem;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
   }
-  .features .card {
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  .features-grid .card {
+    border: none;
+    border-radius: 0;
+    background: var(--surface);
   }
-  .features .card:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
-  .features .card h3 {
-    margin: 0.7rem 0 0.4rem;
-    font-size: 1.02rem;
+  .card-num {
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: var(--accent);
+    letter-spacing: 0.06em;
+    margin-bottom: 0.9rem;
   }
-  .features .card p {
+  .features-grid .card h3 {
+    margin: 0 0 0.5rem;
+    font-size: 1.05rem;
+    letter-spacing: -0.01em;
+  }
+  .features-grid .card p {
     margin: 0;
     font-size: 0.9rem;
     color: var(--text-muted);
   }
-  .feature-icon-wrap {
-    width: 40px;
-    height: 40px;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: color-mix(in srgb, var(--brand) 14%, transparent);
-  }
-  .feature-icon { width: 20px; height: 20px; color: var(--brand); }
 
   .why {
-    margin: 3.5rem 0 4rem;
+    margin: 4rem 0 4.5rem;
     display: grid;
-    grid-template-columns: 1fr 1.4fr;
-    gap: 2rem;
+    grid-template-columns: 0.8fr 1.2fr;
+    gap: 2.5rem;
     align-items: start;
+    padding-top: 3rem;
+    border-top: 1px solid var(--border);
   }
-  .why h2 { font-size: 1.5rem; margin: 0; letter-spacing: -0.01em; }
-  .why p { color: var(--text-muted); margin: 0; }
+  .why h2 { font-size: 1.6rem; margin: 0; letter-spacing: -0.02em; line-height: 1.3; }
+  .why p { color: var(--text-muted); margin: 0; font-size: 1.02rem; }
   @media (max-width: 680px) {
     .why { grid-template-columns: 1fr; }
-    .preview-wrap { margin-top: 1.5rem; }
   }
 
   footer {
@@ -172,13 +211,6 @@
 <body>
 
 <div class="hero-band">
-  <svg class="hero-rings" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-    <circle cx="200" cy="200" r="190" stroke="white" stroke-width="1"/>
-    <circle cx="200" cy="200" r="145" stroke="white" stroke-width="1"/>
-    <circle cx="200" cy="200" r="100" stroke="white" stroke-width="1"/>
-    <path d="M200 10V40M200 360V390M10 200H40M360 200H390" stroke="white" stroke-width="1.5"/>
-    <path d="M245 155L205 195L245 245L280 165Z" fill="var(--hero-accent)" opacity="0.9"/>
-  </svg>
   <div class="wrap">
     <nav class="site-nav">
       <a class="brand" href="/">
@@ -192,68 +224,65 @@
       <button class="theme-toggle" id="themeToggle" type="button" aria-label="테마 전환">🌙</button>
     </nav>
 
-    <section class="hero">
-      <span class="badge">🚧 프로토타입 개발 중</span>
-      <h1>말버릇 하나까지 짚어주는<br />한국어 발표 연습 코치</h1>
-      <p class="lead">녹음 한 번이면 필러워드, 말 속도, 침묵 패턴을 데이터로 보여줍니다.
-        "음", "어", "그니까" 같은 한국어 특유의 구어체 습관까지 잡아내는 게 목표예요.</p>
-      <div class="hero-actions">
-        <a class="btn" href="/filler-detection/index.html">필러워드 탐지 데모 체험하기</a>
-        <a class="btn btn-secondary" href="https://github.com/beakjunseok/presentation_compass" target="_blank" rel="noopener">GitHub</a>
+    <div class="hero-grid">
+      <section class="hero">
+        <span class="badge">🚧 프로토타입 개발 중</span>
+        <div class="hero-mark">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/>
+            <path d="M15 9l-3.2 1.8L10 14l3.2-1.8L15 9z" fill="currentColor"/>
+          </svg>
+        </div>
+        <h1>말버릇 하나까지 짚어주는<br /><em>한국어</em> 발표 연습 코치</h1>
+        <p class="lead">녹음 한 번이면 필러워드, 말 속도, 침묵 패턴을 데이터로 보여줍니다.
+          "음", "어", "그니까" 같은 한국어 특유의 구어체 습관까지 잡아내는 게 목표예요.</p>
+        <div class="hero-actions">
+          <a class="btn" href="/filler-detection/index.html">필러워드 탐지 데모 체험하기</a>
+          <a class="btn btn-secondary" href="https://github.com/beakjunseok/presentation_compass" target="_blank" rel="noopener">GitHub</a>
+        </div>
+      </section>
+
+      <div class="preview-card">
+        <div class="preview-label">
+          <span class="tag">분석 결과 예시</span>
+          <div class="dot-row"><span></span><span></span><span></span></div>
+        </div>
+        <p class="transcript">
+          <mark>어...</mark> <mark>그니까</mark> 제가 오늘 말씀드릴 내용은 <mark>음</mark> 조금 복잡한데요,
+          최대한 쉽게 설명드릴게요.
+        </p>
+        <div class="preview-stats">
+          <div class="stat-chip"><b>3회</b><span>필러워드</span></div>
+          <div class="stat-chip"><b>132 WPM</b><span>평균 속도</span></div>
+          <div class="stat-chip"><b>1회</b><span>2초+ 침묵</span></div>
+        </div>
       </div>
-    </section>
+    </div>
   </div>
 </div>
 
 <div class="wrap">
-  <div class="preview-wrap">
-    <div class="preview-card">
-      <div class="preview-label">
-        <span class="tag">분석 결과 예시</span>
-        <span class="badge" style="font-size:0.7rem;">예시 데이터</span>
-      </div>
-      <p class="transcript">
-        <mark>어...</mark> <mark>그니까</mark> 제가 오늘 말씀드릴 내용은 <mark>음</mark> 조금 복잡한데요,
-        최대한 쉽게 설명드릴게요.
-      </p>
-      <div class="preview-stats">
-        <div class="stat-chip"><b>3회</b><span>필러워드</span></div>
-        <div class="stat-chip"><b>132 WPM</b><span>평균 말 속도</span></div>
-        <div class="stat-chip"><b>1회</b><span>2초+ 침묵</span></div>
-      </div>
-    </div>
-  </div>
-
   <section class="features">
-    <div class="card">
-      <div class="feature-icon-wrap">
-        <svg class="feature-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 2v20M2 12h20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-          <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/>
-        </svg>
-      </div>
-      <h3>필러워드 탐지</h3>
-      <p>"음/어/그니까/약간" 등 한국어 특화 필러워드를 문맥까지 고려해 정확히 골라냅니다.</p>
+    <div class="features-head">
+      <div class="section-eyebrow">What it does</div>
+      <h2>세 가지를 데이터로 보여줍니다</h2>
     </div>
-    <div class="card">
-      <div class="feature-icon-wrap">
-        <svg class="feature-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M3 17l5-6 4 4 8-10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
+    <div class="features-grid">
+      <div class="card">
+        <div class="card-num">01</div>
+        <h3>필러워드 탐지</h3>
+        <p>"음/어/그니까/약간" 등 한국어 특화 필러워드를 문맥까지 고려해 정확히 골라냅니다.</p>
       </div>
-      <h3>말 속도 분석</h3>
-      <p>전체 평균 WPM은 물론 30초 구간별 속도 변화까지 그래프로 확인할 수 있습니다.</p>
-    </div>
-    <div class="card">
-      <div class="feature-icon-wrap">
-        <svg class="feature-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="3" y="10" width="3" height="4" rx="1" fill="currentColor"/>
-          <rect x="9" y="6" width="3" height="12" rx="1" fill="currentColor"/>
-          <rect x="15" y="3" width="3" height="18" rx="1" fill="currentColor" opacity="0.4"/>
-        </svg>
+      <div class="card">
+        <div class="card-num">02</div>
+        <h3>말 속도 분석</h3>
+        <p>전체 평균 WPM은 물론 30초 구간별 속도 변화까지 그래프로 확인할 수 있습니다.</p>
       </div>
-      <h3>침묵 구간 분석</h3>
-      <p>2초 이상 이어지는 정적 구간을 찾아, 부자연스럽게 잦은 침묵을 짚어드립니다.</p>
+      <div class="card">
+        <div class="card-num">03</div>
+        <h3>침묵 구간 분석</h3>
+        <p>2초 이상 이어지는 정적 구간을 찾아, 부자연스럽게 잦은 침묵을 짚어드립니다.</p>
+      </div>
     </div>
   </section>
 
