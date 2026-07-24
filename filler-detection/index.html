@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<title>필러워드 탐지 로직 검증</title>
+<style>
+  body { font-family: -apple-system, "Malgun Gothic", sans-serif; max-width: 900px; margin: 2rem auto; padding: 0 1rem; }
+  h1 { font-size: 1.3rem; }
+  .summary { padding: 1rem; border-radius: 8px; background: #f0f4f8; margin-bottom: 1.5rem; }
+  .summary.fail { background: #fde8e8; }
+  table { border-collapse: collapse; width: 100%; margin-bottom: 1.5rem; font-size: 0.9rem; }
+  th, td { border: 1px solid #ddd; padding: 4px 8px; text-align: left; }
+  th { background: #eee; }
+  .case-title { font-weight: bold; margin-top: 1.5rem; }
+  .desc { color: #666; font-size: 0.85rem; margin-bottom: 0.5rem; }
+  .ok { color: #2f9e44; }
+  .bad { color: #e03131; font-weight: bold; }
+  .skip { color: #adb5bd; }
+</style>
+</head>
+<body>
+<h1>한국어 필러워드 탐지 로직 검증</h1>
+
+<h2 style="font-size:1.05rem;">1단계 — 규칙 기반(정규식+사전)</h2>
+<div id="summary-rule" class="summary">채점 중...</div>
+<div id="results-rule"></div>
+
+<h2 style="font-size:1.05rem;">2단계 — Gemini 문맥 판정</h2>
+<div class="summary" style="background:#eef2ff;">
+  <div>Gemini 호출은 서버(/api/detect-fillers)를 통해 이루어집니다. API 키는 Vercel 환경변수(GEMINI_API_KEY)로만 보관되며 브라우저에는 절대 노출되지 않습니다. 배포된 사이트에서만 동작합니다.</div>
+  <div style="margin-top:0.5rem;">
+    <button id="runGemini">Gemini로 검증 실행</button>
+  </div>
+</div>
+<div id="summary-gemini" class="summary" style="display:none;"></div>
+<div id="results-gemini"></div>
+
+<script type="module">
+import { detectFillers } from "./filler-detector.mjs";
+import { classifyWithGemini } from "./gemini-client.mjs";
+import { cases } from "./test-cases.mjs";
+
+function renderCases(containerEl, summaryEl, labelPrefix, resultsByCase) {
+  containerEl.innerHTML = "";
+  let total = 0, correct = 0;
+
+  for (const { c, output } of resultsByCase) {
+    const rows = output.map((tok, i) => {
+      const expected = c.tokens[i].expected;
+      let verdict = "skip";
+      if (expected !== null) {
+        total++;
+        const isRight = tok.isFiller === expected;
+        if (isRight) correct++;
+        verdict = isRight ? "ok" : "bad";
+      }
+      return { word: tok.word, isFiller: tok.isFiller, reason: tok.reason, expected, verdict };
+    });
+
+    const block = document.createElement("div");
+    block.innerHTML = `
+      <div class="case-title">${c.id}</div>
+      <div class="desc">${c.desc}</div>
+      <table>
+        <tr><th>단어</th><th>예측</th><th>기대값</th><th>근거</th><th>판정</th></tr>
+        ${rows.map(r => `
+          <tr>
+            <td>${r.word}</td>
+            <td>${r.isFiller ? "필러" : "정상"}</td>
+            <td>${r.expected === null ? "-" : (r.expected ? "필러" : "정상")}</td>
+            <td>${r.reason}</td>
+            <td class="${r.verdict}">${r.verdict === "ok" ? "✓" : r.verdict === "bad" ? "✗ 오답" : "-"}</td>
+          </tr>`).join("")}
+      </table>
+    `;
+    containerEl.appendChild(block);
+  }
+
+  const acc = total ? ((correct / total) * 100).toFixed(1) : "N/A";
+  summaryEl.style.display = "block";
+  summaryEl.textContent = `${labelPrefix} — 채점 대상 ${total}개 중 ${correct}개 정답 (정확도 ${acc}%)`;
+  summaryEl.classList.toggle("fail", correct !== total);
+}
+
+// 1단계: 규칙 기반 (즉시 실행)
+const ruleResults = cases.map((c) => ({ c, output: detectFillers(c.tokens) }));
+renderCases(document.getElementById("results-rule"), document.getElementById("summary-rule"), "규칙 기반", ruleResults);
+
+// 2단계: Gemini (버튼 클릭 시 실행, /api/detect-fillers 프록시 경유)
+document.getElementById("runGemini").addEventListener("click", async () => {
+  const summaryEl = document.getElementById("summary-gemini");
+  summaryEl.style.display = "block";
+  summaryEl.classList.remove("fail");
+  summaryEl.textContent = "Gemini 호출 중...";
+
+  try {
+    const geminiResults = [];
+    for (const c of cases) {
+      const output = await classifyWithGemini(c.tokens);
+      geminiResults.push({ c, output });
+    }
+    renderCases(document.getElementById("results-gemini"), summaryEl, "Gemini", geminiResults);
+  } catch (err) {
+    summaryEl.textContent = "오류: " + err.message + " (로컬 정적 서버가 아닌 Vercel 배포 환경에서만 동작합니다)";
+    summaryEl.classList.add("fail");
+  }
+});
+</script>
+</body>
+</html>
