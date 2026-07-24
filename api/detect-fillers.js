@@ -12,13 +12,13 @@ export default async function handler(req, res) {
     return;
   }
 
-  const { tokens } = req.body ?? {};
+  const { tokens, script } = req.body ?? {};
   if (!Array.isArray(tokens) || tokens.length === 0) {
     res.status(400).json({ error: "tokens 배열이 필요합니다." });
     return;
   }
 
-  const { model, body } = buildGeminiRequest(tokens);
+  const { model, body } = buildGeminiRequest(tokens, script);
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(apiKey)}`;
 
   try {

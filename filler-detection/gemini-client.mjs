@@ -1,11 +1,11 @@
 // 브라우저에서 호출하는 클라이언트 — Gemini API 키를 직접 다루지 않고,
 // 서버(Vercel 서버리스 함수 /api/detect-fillers)에 위임한다.
 
-export async function classifyWithGemini(tokens) {
+export async function classifyWithGemini(tokens, script) {
   const res = await fetch("/api/detect-fillers", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ tokens }),
+    body: JSON.stringify({ tokens, script }),
   });
 
   if (!res.ok) {

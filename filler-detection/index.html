@@ -21,6 +21,45 @@
   .ok { color: var(--ok); }
   .bad { color: var(--bad); font-weight: bold; }
   .skip { color: var(--text-muted); }
+
+  .try-section { margin-bottom: 3rem; }
+  .try-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+  @media (max-width: 640px) { .try-grid { grid-template-columns: 1fr; } }
+  .field label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem; }
+  .field .optional { font-weight: 400; color: var(--text-muted); }
+  .field textarea {
+    width: 100%;
+    min-height: 140px;
+    resize: vertical;
+    font-family: inherit;
+    font-size: 0.92rem;
+    padding: 0.7rem 0.8rem;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+  }
+  .try-result { margin-top: 1rem; }
+  .try-transcript {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.1rem 1.3rem;
+    font-size: 1.02rem;
+    line-height: 2;
+  }
+  .try-transcript mark {
+    background: color-mix(in srgb, var(--accent) 22%, transparent);
+    color: var(--accent);
+    font-weight: 700;
+    border-radius: 6px;
+    padding: 0.05rem 0.35rem;
+    text-decoration: none;
+  }
+  .try-stats { display: flex; gap: 0.6rem; margin-top: 0.9rem; flex-wrap: wrap; }
+  .try-stats .stat-chip { background: var(--surface-2); border-radius: 10px; padding: 0.55rem 0.85rem; font-size: 0.85rem; }
+  .try-stats .stat-chip b { display: block; font-size: 1.05rem; color: var(--text); }
+  .try-stats .stat-chip span { color: var(--text-muted); }
 </style>
 </head>
 <body>
@@ -40,6 +79,24 @@
   <main>
   <h1 style="margin-top:2.2rem;">한국어 필러워드 탐지 로직 검증</h1>
   <p class="page-lead">규칙 기반 탐지와 Gemini 문맥 판정을 같은 테스트셋으로 비교하는 내부 검증 페이지입니다.</p>
+
+  <section class="try-section">
+    <h2 class="step" style="margin-top:0;">내 대본·발화로 직접 테스트</h2>
+    <p class="desc" style="margin-bottom:1rem;">발표 대본을 넣으면 Gemini가 "계획된 내용 vs 즉흥 발화"를 구분하는 데 참고합니다. 대본 없이 발화만 넣어도 동작합니다.</p>
+    <div class="try-grid">
+      <div class="field">
+        <label>발표 대본 <span class="optional">(선택)</span></label>
+        <textarea id="scriptInput" placeholder="예: 안녕하세요, 오늘 발표를 맡은 OOO입니다. 먼저 프로젝트 배경부터 말씀드리겠습니다..."></textarea>
+      </div>
+      <div class="field">
+        <label>실제 발화 전사록 <span class="optional">(필수)</span></label>
+        <textarea id="transcriptInput" placeholder="예: 어... 그니까 안녕하세요, 오늘 음 발표를 맡은 OOO입니다..."></textarea>
+      </div>
+    </div>
+    <button class="btn" id="runTry" type="button">필러워드 분석하기</button>
+    <div id="try-summary" class="summary" style="display:none; margin-top:1rem;"></div>
+    <div id="try-result" class="try-result"></div>
+  </section>
 
   <h2 class="step">1단계 — 규칙 기반(정규식+사전)</h2>
   <div id="summary-rule" class="summary">채점 중...</div>
@@ -118,6 +175,48 @@ function renderCases(containerEl, summaryEl, labelPrefix, resultsByCase) {
   summaryEl.textContent = `${labelPrefix} — 채점 대상 ${total}개 중 ${correct}개 정답 (정확도 ${acc}%)`;
   summaryEl.classList.toggle("fail", correct !== total);
 }
+
+// 내 대본·발화로 직접 테스트
+document.getElementById("runTry").addEventListener("click", async () => {
+  const script = document.getElementById("scriptInput").value;
+  const transcriptText = document.getElementById("transcriptInput").value.trim();
+  const summaryEl = document.getElementById("try-summary");
+  const resultEl = document.getElementById("try-result");
+
+  if (!transcriptText) {
+    summaryEl.style.display = "block";
+    summaryEl.classList.add("fail");
+    summaryEl.textContent = "실제 발화 전사록을 입력하세요.";
+    return;
+  }
+
+  const words = transcriptText.split(/\s+/).filter(Boolean);
+  const tokens = words.map((word, i) => ({ word, start: i, end: i + 1 }));
+
+  summaryEl.style.display = "block";
+  summaryEl.classList.remove("fail");
+  summaryEl.textContent = "Gemini 호출 중...";
+  resultEl.innerHTML = "";
+
+  try {
+    const output = await classifyWithGemini(tokens, script);
+    const fillerCount = output.filter((t) => t.isFiller).length;
+    const wpmNote = script.trim() ? " (대본 참고함)" : " (대본 없음)";
+    summaryEl.textContent = `필러워드 ${fillerCount}개 / 전체 ${output.length}단어${wpmNote}`;
+
+    const html = output.map((t) => t.isFiller ? `<mark title="${t.reason}">${t.word}</mark>` : t.word).join(" ");
+    resultEl.innerHTML = `
+      <div class="try-transcript">${html}</div>
+      <div class="try-stats">
+        <div class="stat-chip"><b>${fillerCount}회</b><span>필러워드</span></div>
+        <div class="stat-chip"><b>${output.length}단어</b><span>전체 단어 수</span></div>
+      </div>
+    `;
+  } catch (err) {
+    summaryEl.classList.add("fail");
+    summaryEl.textContent = "오류: " + err.message + " (Vercel 배포 환경에서만 동작합니다)";
+  }
+});
 
 // 1단계: 규칙 기반 (즉시 실행)
 const ruleResults = cases.map((c) => ({ c, output: detectFillers(c.tokens) }));
