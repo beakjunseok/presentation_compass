@@ -2,10 +2,169 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8" />
-<meta http-equiv="refresh" content="0; url=/filler-detection/index.html" />
-<title>presentation-compass</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Presentation Compass — 한국어 발표 연습 코치</title>
+<meta name="description" content="녹음 한 번으로 필러워드, 말 속도, 침묵 패턴을 데이터로 짚어주는 한국어 특화 발표 연습 피드백 도구" />
+<link rel="stylesheet" href="/styles.css" />
+<style>
+  .hero {
+    padding: 5.5rem 0 4rem;
+    text-align: center;
+  }
+  .compass-mark {
+    width: 76px;
+    height: 76px;
+    margin: 0 auto 1.5rem;
+    color: var(--brand);
+  }
+  .hero h1 {
+    font-size: clamp(1.9rem, 4vw, 2.6rem);
+    letter-spacing: -0.02em;
+    margin: 0 0 0.9rem;
+  }
+  .hero p.lead {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    max-width: 560px;
+    margin: 0 auto 2rem;
+  }
+  .hero-actions {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 1.25rem;
+  }
+  .features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.1rem;
+    margin: 3rem 0;
+  }
+  .features .card h3 {
+    margin: 0.6rem 0 0.4rem;
+    font-size: 1.02rem;
+  }
+  .features .card p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+  }
+  .feature-icon {
+    width: 30px;
+    height: 30px;
+    color: var(--brand);
+  }
+  .why {
+    margin: 3.5rem 0;
+  }
+  .why h2 {
+    font-size: 1.3rem;
+    margin-bottom: 0.6rem;
+  }
+  .why p {
+    color: var(--text-muted);
+    max-width: 680px;
+  }
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem 0;
+    margin-top: 2rem;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+</style>
 </head>
 <body>
-<p><a href="/filler-detection/index.html">필러워드 탐지 로직 검증 페이지로 이동</a></p>
+
+<div class="wrap">
+  <nav class="site-nav">
+    <a class="brand" href="/">
+      <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="24" cy="24" r="21" stroke="currentColor" stroke-width="2.5"/>
+        <circle cx="24" cy="24" r="2.5" fill="currentColor"/>
+        <path d="M31 17L21 21L17 31L27 27L31 17Z" fill="var(--accent)" stroke="var(--accent)" stroke-linejoin="round"/>
+      </svg>
+      Presentation Compass
+    </a>
+    <button class="theme-toggle" id="themeToggle" type="button" aria-label="테마 전환">🌙</button>
+  </nav>
+
+  <section class="hero">
+    <svg class="compass-mark" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="24" cy="24" r="21" stroke="currentColor" stroke-width="2"/>
+      <circle cx="24" cy="24" r="1" stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
+      <circle cx="24" cy="24" r="2.5" fill="currentColor"/>
+      <path d="M31 17L21 21L17 31L27 27L31 17Z" fill="var(--accent)" stroke="var(--accent)" stroke-linejoin="round"/>
+    </svg>
+    <span class="badge">🚧 프로토타입 개발 중</span>
+    <h1>말버릇 하나까지 짚어주는<br />한국어 발표 연습 코치</h1>
+    <p class="lead">녹음 한 번이면 필러워드, 말 속도, 침묵 패턴을 데이터로 보여줍니다.
+      "음", "어", "그니까" 같은 한국어 특유의 구어체 습관까지 잡아내는 게 목표예요.</p>
+    <div class="hero-actions">
+      <a class="btn" href="/filler-detection/index.html">필러워드 탐지 데모 체험하기</a>
+      <a class="btn btn-secondary" href="https://github.com/beakjunseok/presentation_compass" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </section>
+
+  <section class="features">
+    <div class="card">
+      <svg class="feature-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2v20M2 12h20" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/>
+      </svg>
+      <h3>필러워드 탐지</h3>
+      <p>"음/어/그니까/약간" 등 한국어 특화 필러워드를 문맥까지 고려해 정확히 골라냅니다.</p>
+    </div>
+    <div class="card">
+      <svg class="feature-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M3 17l5-6 4 4 8-10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <h3>말 속도 분석</h3>
+      <p>전체 평균 WPM은 물론 30초 구간별 속도 변화까지 그래프로 확인할 수 있습니다.</p>
+    </div>
+    <div class="card">
+      <svg class="feature-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="3" y="10" width="3" height="4" rx="1" fill="currentColor"/>
+        <rect x="9" y="6" width="3" height="12" rx="1" fill="currentColor"/>
+        <rect x="15" y="3" width="3" height="18" rx="1" fill="currentColor" opacity="0.35"/>
+      </svg>
+      <h3>침묵 구간 분석</h3>
+      <p>2초 이상 이어지는 정적 구간을 찾아, 부자연스럽게 잦은 침묵을 짚어드립니다.</p>
+    </div>
+  </section>
+
+  <section class="why">
+    <h2>왜 한국어 특화인가</h2>
+    <p>기존 발표 연습 도구는 대부분 영어 기반이라 한국어 구어체 필러 패턴을 잡지 못합니다.
+      "그"나 "저"처럼 지시관형사와 필러워드를 겸하는 단어는 문맥 판단이 필요해서, 규칙 기반 탐지만으로는 한계가 뚜렷합니다.
+      Presentation Compass는 규칙 기반 탐지와 LLM 문맥 판정을 함께 써서 이 문제를 풀어가는 중입니다.</p>
+  </section>
+
+  <footer>
+    <span>Presentation Compass · 개인 프로젝트</span>
+    <a href="https://github.com/beakjunseok/presentation_compass" target="_blank" rel="noopener">github.com/beakjunseok/presentation_compass</a>
+  </footer>
+</div>
+
+<script>
+  const root = document.documentElement;
+  const toggle = document.getElementById("themeToggle");
+  const stored = localStorage.getItem("pc-theme");
+  if (stored) root.setAttribute("data-theme", stored);
+  const isDark = () => (root.getAttribute("data-theme") || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")) === "dark";
+  const sync = () => { toggle.textContent = isDark() ? "☀️" : "🌙"; };
+  sync();
+  toggle.addEventListener("click", () => {
+    const next = isDark() ? "light" : "dark";
+    root.setAttribute("data-theme", next);
+    localStorage.setItem("pc-theme", next);
+    sync();
+  });
+</script>
 </body>
 </html>
